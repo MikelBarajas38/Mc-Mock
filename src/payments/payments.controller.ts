@@ -21,13 +21,8 @@ export class PaymentsController {
   ) {}
 
   @Post()
-  executePayment(
-    @Headers('x-mcd-api-key') apiKey: string,
-    @Body() paymentEventDto: PaymentEventDto
-  ) {
-    if (!this.authService.validateApiKey(apiKey)) {
-      throw new UnauthorizedException('Invalid API key');
-    }
+  @UseGuards(JwtAuthGuard)
+  executePayment(@Body() paymentEventDto: PaymentEventDto) {
     return this.paymentsService.executePayment(paymentEventDto);
   }
 
@@ -37,7 +32,6 @@ export class PaymentsController {
     return this.paymentsService.getPaymentStatus(paymentOrderId);
   }
 
-  // For testing purposes, get a token
   @Post('auth/token')
   getMockToken(
     @Headers('x-mcd-api-key') apiKey: string,
