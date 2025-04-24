@@ -15,7 +15,7 @@ export class PaymentOrderDto {
   location_id: string;
 
   @IsNotEmpty()
-  @IsObject()fails
+  @IsObject()
   order_info: Record<string, any>;
 
   @IsNotEmpty()
