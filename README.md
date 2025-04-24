@@ -1,29 +1,11 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
-</p>
+# McMock
+## McDonald's Payment System Mock API
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+A NestJS-based mock API for simulating the McDonald's payments system.
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg" alt="Donate us"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow" alt="Follow us on Twitter"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+☠ Do NOT order these past 3 AM ☠
 
-## Description
-
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+TalentLand 2025
 
 ## Project setup
 
@@ -57,42 +39,131 @@ $ npm run test:e2e
 $ npm run test:cov
 ```
 
-## Deployment
+## API Documentation
 
-When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
+### Authentication
 
-If you are looking for a cloud-based platform to deploy your NestJS application, check out [Mau](https://mau.nestjs.com), our official platform for deploying NestJS applications on AWS. Mau makes deployment straightforward and fast, requiring just a few simple steps:
+The API uses JWT authentication for all endpoints except the token generation endpoint, which uses an API key.
+
+#### Getting a JWT Token
 
 ```bash
-$ npm install -g @nestjs/mau
-$ mau deploy
+curl -X POST https://api.example.com/payments/auth/token \
+  -H "x-mcd-api-key: test_mcd_api_key_123" \
+  -H "Content-Type: application/json" \
+  -d '{"client_id": "your_client_id"}'
 ```
 
-With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
+Response:
+```json
+{
+  "access_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVC..."
+}
+```
 
-## Resources
+### API Endpoints
 
-Check out a few resources that may come in handy when working with NestJS:
+#### Execute Payment
 
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Deploy your application to AWS with the help of [NestJS Mau](https://mau.nestjs.com) in just a few clicks.
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
+Process a payment with one or more payment orders.
 
-## Support
+```
+POST /payments
+```
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+**Headers:**
+- Authorization: Bearer {your_jwt_token}
+- Content-Type: application/json
 
-## Stay in touch
+**Request Body:**
+```json
+{
+  "checkout_id": "checkout_123",
+  "buyer_info": {
+    "name": "John Doe",
+    "email": "john@example.com"
+  },
+  "psp": "stripe",
+  "psp_info": {
+    "transaction_id": "tx_123456",
+    "success": true
+  },
+  "payment_orders": [
+    {
+      "payment_order_id": "order_123",
+      "client_id": "client_456",
+      "location_id": "location_789",
+      "order_info": {
+        "items": [
+          { "name": "Big Mac", "quantity": 2 }
+        ]
+      },
+      "amount": "10.99",
+      "currency": "USD"
+    }
+  ]
+}
+```
 
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+**Response:**
+```json
+{
+  "checkout_id": "checkout_123",
+  "psp": "stripe",
+  "payment_orders": [
+    {
+      "payment_order_id": "order_123",
+      "status": "COMPLETED",
+      "checkout_id": "checkout_123"
+    }
+  ]
+}
+```
 
-## License
+#### Check Payment Status
 
-Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+Get the status of a payment order.
+
+```
+GET /payments/{payment_order_id}
+```
+
+**Headers:**
+- Authorization: Bearer {your_jwt_token}
+
+**Response:**
+```json
+{
+  "payment_order_id": "order_123",
+  "checkout_id": "checkout_123",
+  "client_id": "client_456",
+  "location_id": "location_789",
+  "amount": "10.99",
+  "currency": "USD",
+  "psp": "stripe",
+  "psp_reference": "psp_ref_abc123",
+  "status": "COMPLETED",
+  "order_status": "COMPLETED",
+  "pickup_code": "A42"
+}
+```
+
+### Mock Implementation Details
+
+This mock API simulates payment processing with the following behaviors:
+
+1. **Payment Execution**:
+   - Creates a new payment entry for each order in the request
+   - Generates a random PSP reference for each order
+   - Payment status is determined by the `success` flag in the `psp_info` object (defaults to `true`)
+   - Failed payments include error details with code, message, and recommendations
+
+2. **Payment Status**:
+   - Returns the payment details for the requested payment order ID
+   - Randomly assigns an order status of either "PENDING" or "COMPLETED"
+   - Generates a random pickup code (letter followed by number) for COMPLETED orders
+   - Returns a 404 error if the payment order is not found
+
+3. **Error Handling**:
+   - Error responses include appropriate HTTP status codes and descriptive messages
+   - Payment failures include detailed error information that can be used for testing error flows
